@@ -1,0 +1,9 @@
+.abschnitt .card-header label {
+	display: block;
+}
+
+.ergebnis {
+	border-top: 1px solid lightgrey;
+	margin-top: 1em;
+	padding-top: 1em;
+}

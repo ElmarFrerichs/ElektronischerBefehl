@@ -1,0 +1,666 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Elektrischer Befehl - Prototyp 1</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		
+		<script
+			src="https://code.jquery.com/jquery-3.2.1.min.js"
+			integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+			crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+			integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+			crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+			integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+			crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+			integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+			crossorigin="anonymous">
+		
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<form autocomplete="off">
+			<div class="container" id="befehlsliste">
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-kopf">
+						<label data-toggle="collapse" href="#body-kopf" /> Befehlskopf</label>
+					</div>
+					<div id="body-kopf" class="collapse show" aria-labelledby="heading-kopf">
+						<div class="card-body">
+							<label>Nummer/Name: <input name="kopf-nummer" type="text" value="12345" /></label>
+							<ul>
+								<li><label><input name="kopf-zugart" type="radio" checked /> Zug</label></li>
+								<li><label><input name="kopf-zugart" type="radio" /> Sperrfahrt</label></li>
+								<li><label><input name="kopf-zugart" type="radio" /> Sperrfahrt Kl</label></li>
+								<li><label><input name="kopf-zugart" type="radio" /> Schiebefahrzeug für Zug</label></li>
+								<li><label><input name="kopf-zugart" type="radio" /> Rangierfahrt</label></li>
+							</ul>
+							<label>Standort: <input name="kopf-standort" type="text" value="Signal N 3 in Gleis 3 Walfdorf" size="50" /></span></label>
+							
+							<p class="ergebnis">
+								Triebfahrzeugführer Zug 12345, Standort Signal N 3 in Gleis 3 Walfdorf
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b1">
+						<label><input name="b1" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b1" />
+							Befehl 1: Einfahrt / Weiterfahrt
+						</label>
+					</div>
+					<div id="body-b1" class="collapse" aria-labelledby="heading-b1">
+						<div class="card-body">
+							<p>
+								<label>Betriebsstelle: <select name="b1-betriebsstelle" />
+									<option>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option selected>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							<ul>
+								<li><label><input name="b1-ein-weiterfahren" type="radio" /> weiterfahren</label></li>
+								<li><label><input name="b1-ein-weiterfahren" type="radio" checked /> einfahren</label></li>
+							</ul>
+							
+							<p class="ergebnis">
+								Befehl 1: Sie dürfen in den Bf Walfdorf einfahren.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b2">
+						<label><input name="b2" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b2" checked />
+							Befehl 2: Vorbeifahrt an Signal
+						</label>
+					</div>
+					<div id="body-b2" class="collapse show" aria-labelledby="heading-b2">
+						<div class="card-body">
+							<ul>
+								<li><label><input name="b2-vorbei-weiterfahren" type="radio" /> vorbeifahren</label></li>
+								<li><label><input name="b2-vorbei-weiterfahren" type="radio" checked /> weiterfahren nach Vorbeifahrt</label></li>
+								<li><label><input name="b2-vorbei-weiterfahren" type="radio" /> weiterfahren nach TR</label></li>
+							</ul>
+							Ort:
+							<ul>
+								<li>
+									<label><input name="b2-ortauswahl" type="radio" checked /></label>
+									<button>Ort</button>
+									<span>Signal N 3 Bf Walfdorf</span>
+								</li>
+								<li><label><input name="b2-ortauswahl" type="radio" /> Freie Angabe:</label> <input name="b2-ortangabe" type="text" value="" /></li>
+							</ul>
+							<p>
+								<label><input type="checkbox" name="b2-vorsignal" /> Höchstens 40 km/h bis zum nächsten Hauptsignal (Vorsignal am Hauptsignal)</label>
+							</p>
+							
+							<p class="ergebnis">
+								Befehl 2: Sie dürfen weiterfahren nach Vorbeifahrt am
+								<table class="table">
+									<tr>
+										<th scope="col">Signal usw.</th>
+										<th scope="col">Bezeichnung / km</th>
+										<th scope="col">Bf, Bft, Abzw, Üst, Bk, Dkst</th>
+									</tr>
+									<tr>
+										<td>Signal</td>
+										<td>N 3</td>
+										<td>Bf Walfdorf</td>
+									</tr>
+								</table>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b3">
+						<label><input name="b3" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b3" />
+							Befehl 3: Ausfahrt
+						</label>
+					</div>
+					<div id="body-b3" class="collapse" aria-labelledby="heading-b3">
+						<div class="card-body">
+							<p>
+								<label>Betriebsstelle: <select name="b3-betriebsstelle" />
+									<option>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option selected>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							<p>
+								<label><input type="checkbox" name="b3-vorsignal" checked /> Höchstens 40 km/h bis zum nächsten Hauptsignal (Vorsignal am Hauptsignal)</label>
+							</p>
+							
+							<p class="ergebnis">
+								Befehl 3: Sie dürfen aus dem Bf Walfdorf ausfahren.
+								<br>
+								Befehl 3.1: Sie müssen bis zum Erkennen der Stellung des nächsten Hauptsignals mit höchstens 40 km/h fahren.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b4">
+						<label><input name="b4" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b4" />
+							Befehl 4: Fahren auf dem Gegengleis
+						</label>
+					</div>
+					<div id="body-b4" class="collapse" aria-labelledby="heading-b4">
+						<div class="card-body">
+							<p>
+								<label>Betriebsstelle von: <select name="b4-betriebsstelle1" />
+									<option>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option selected>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							<p>
+								<label>Betriebsstelle nach: <select name="b4-betriebsstelle2" />
+									<option>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option selected>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							
+							<p class="ergebnis">
+								Befehl 4: Sie fahren auf dem Gegengleis von Walfdorf bis Leopoldsgrün.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b5">
+						<label><input name="b5" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b5" />
+							Befehl 5: Sperrfahrt mit Rückkehr
+						</label>
+					</div>
+					<div id="body-b5" class="collapse" aria-labelledby="heading-b5">
+						<div class="card-body">
+							<ul>
+								<li><label><input name="b5-schieben" type="radio" checked /> Sie fahren</label></li>
+								<li><label><input name="b5-schieben" type="radio" /> Sie schieben nach</label></li>
+							</ul>
+							<p>
+								<label>Betriebsstelle von: <select name="b5-betriebsstelle1" />
+									<option selected>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							<p>
+								<label>Betriebsstelle in Richtung: <select name="b5-betriebsstelle2" />
+									<option>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option selected>Derau, Bf</option>
+									<option>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							<p>
+								<label>Betriebsstelle bis: <select name="b5-betriebsstelle3" />
+									<option>Berg, Bf</option>
+									<option selected>Berg Stadt, Awanst</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							<ul>
+								<li><label><input name="b5-zusatz" type="radio" /> kein Zusatz</label></li>
+								<li><label><input name="b5-zusatz" type="radio" checked /> Hinfahrt auf Regelgleis, Rückfahrt auf Gegengleis</label></li>
+								<li><label><input name="b5-zusatz" type="radio" /> Hinfahrt auf Gegengleis, Rückfahrt auf Regelgleis</label></li>
+							</ul>
+							
+							<p class="ergebnis">
+								Befehl 5: Sie fahren von Bf Berg in Richtung Bf Derau bis Awanst Berg Stadt und kehren zurück.
+								<br>
+								Befehl 5.1: Hinfahrt auf dem Regelgleis, Rückfahrt auf Gegengleis.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b6">
+						<label><input name="b6" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b6" />
+							Befehl 6: Ein-, Aus- und Weiterfahren auf dem Gegengleis
+						</label>
+					</div>
+					<div id="body-b6" class="collapse" aria-labelledby="heading-b6">
+						<div class="card-body">
+							<ul>
+								<li>
+									<label><input name="b6-weiterfahren1" type="checkbox" checked /> Weiterfahren</label>
+									<p>
+										<label>Betriebsstelle: <select name="b6-weiterfahren1-betriebsstelle" />
+											<option>Berg, Bf</option>
+											<option>Cella, Bf</option>
+											<option>Derau, Bf</option>
+											<option selected>Leopoldsgrün, Abzw</option>
+											<option>Pörsten, Bf</option>
+											<option>Schattenbahnhof, Bf</option>
+											<option>Spendenkasse, Bf</option>
+											<option>Tessin, Bf</option>
+											<option>Walfdorf, Bf</option>
+										</select></label>
+										<ul>
+											<li><label><input name="b6-weiterfahren1-aus" type="radio" checked /> aus Berg (km 0,063)</label></li>
+											<li><label><input name="b6-weiterfahren1-aus" type="radio" /> aus Tessin (km 17,650)</label></li>
+											<li><label><input name="b6-weiterfahren1-aus" type="radio" /> aus Walfdorf (km 16,990)</label></li>
+										</ul>
+									</p>
+								</li>
+								<li><label><input name="b6-weiterfahren2" type="checkbox" /> Weiterfahren</label></li>
+								<li><label><input name="b6-einausfahren" type="checkbox" /> Ein- und Ausfahren</label></li>
+								<li>
+									<label><input name="b6-einfahren" type="checkbox" checked /> Einfahren</label>
+									<p>
+										<label>Betriebsstelle: <select name="b6-einfahren-betriebsstelle" />
+											<option>Berg, Bf</option>
+											<option>Cella, Bf</option>
+											<option>Derau, Bf</option>
+											<option>Leopoldsgrün, Abzw</option>
+											<option>Pörsten, Bf</option>
+											<option>Schattenbahnhof, Bf</option>
+											<option>Spendenkasse, Bf</option>
+											<option>Tessin, Bf</option>
+											<option selected>Walfdorf, Bf</option>
+										</select></label>
+										<ul>
+											<li><label><input name="b6-einfahren-aus" type="radio" /> aus Cella (km 12,659)</label></li>
+											<li><label><input name="b6-einfahren-aus" type="radio" checked /> aus Leopoldsgrün (km 15,201)</label></li>
+											<li><label><input name="b6-einfahren-aus" type="radio" /> aus Spendenkasse (km 12,659)</label></li>
+										</ul>
+									</p>
+								</li>
+							</ul>
+							<p>
+								<label><input type="checkbox" name="b6-vorsignal" /> Höchstens 40 km/h bis zum nächsten Hauptsignal (Vorsignal am Hauptsignal)</label>
+							</p>
+							
+							<p class="ergebnis">
+								Befehl 6: Sie dürfen vom Gegengleis ab km 0,063 auf der Abzw Leopoldsgrün weiterfahren, ab km 15,201 in den Bf Walfdorf einfahren.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b7">
+						<label><input name="b7" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b7" />
+							Befehl 7: Halten auf dem Gegengleis
+						</label>
+					</div>
+					<div id="body-b7" class="collapse" aria-labelledby="heading-b7">
+						<div class="card-body">
+							<p>
+								<label>Betriebsstelle: <select name="b7-betriebsstelle" />
+									<option selected>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							<ul>
+								<li><label><input name="b7-aus" type="radio" /> aus Derau (km 1,525)</label></li>
+								<li><label><input name="b7-aus" type="radio" checked /> aus Leopoldsgrün (km 0,325)</label></li>
+							</ul>
+							
+							<p class="ergebnis">
+								Befehl 7: Sie müssen auf dem Gegengleis vor Signal Ne 1 in km 0,325 des Bf Berg halten.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b8">
+						<label><input name="b8" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b8" />
+							Befehl 8: Bahnübergang
+						</label>
+					</div>
+					<div id="body-b8" class="collapse" aria-labelledby="heading-b8">
+						<div class="card-body">
+							<p>
+								<button>Bahnübergänge</button> <span>Bf Walfdorf in km 12,810</span></li>
+							</p>
+							
+							<p class="ergebnis">
+								Befehl 8: Sie müssen im Bf Walfdorf halten vor BÜ in km 12,810. Sie dürfen weiterfahren, wenn BÜ gesichert ist.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b9">
+						<label><input name="b9" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b9" />
+							Befehl 9: LZB abschalten
+						</label>
+					</div>
+					<div id="body-b9" class="collapse" aria-labelledby="heading-b9">
+						<div class="card-body">
+							<p>
+								<label>Betriebsstelle von: <select name="b9-betriebsstelle1" />
+									<option>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option selected>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							<p>
+								<label>Betriebsstelle nach: <select name="b9-betriebsstelle2" />
+									<option>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option selected>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							
+							<p class="ergebnis">
+								Befehl 9: Schalten Sie die LZB von Zmst Walfdorf bis Zmst Leopoldsgrün ab.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b10">
+						<label><input name="b10" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b10" />
+							Befehl 10: LZB/ETCS-Konfiguration
+						</label>
+					</div>
+					<div id="body-b10" class="collapse" aria-labelledby="heading-b10">
+						<div class="card-body">
+							<ul>
+								<li><label><input name="b10-art" type="radio" checked /> Signalgeführt fahren</label></li>
+								<li>
+									<label><input name="b10-art" type="radio" /> Wechsel in ETCS-Level</label>
+									<ul>
+										<li><label><input name="b10-level" type="radio" /> Level 1</li>
+										<li><label><input name="b10-level" type="radio" /> Level 2</li>
+										<li><label><input name="b10-level" type="radio" /> Level 3</li>
+									</ul>
+								</li>
+								<li>
+									<label><input name="b10-art" type="radio" /> Wechsel in ETCS-Betriebsart</label>
+									<ul>
+										<li><label><input name="b10-level" type="radio" /> STM PZB/LZB</li>
+										<li><label><input name="b10-level" type="radio" /> SR</li>
+									</ul>
+								</li>
+							</ul>
+							<p>
+								<label><input type="checkbox" name="b10-1" checked /> 2.000 m mit höchstens 40 km/h</label>
+							</p>
+							
+							<p class="ergebnis">
+								Befehl 10: Fahren Sie signalgeführt weiter.
+								<br>
+								Befehl 10.1: Sie müssen 2000 m mit höchstens 40 km/h fahren.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b11">
+						<label><input name="b11" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b11" />
+							Befehl 11: LZB/ETCS: Geschwindigkeit bis Langsamfahrstelle (Befehl 12)
+						</label>
+					</div>
+					<div id="body-b11" class="collapse" aria-labelledby="heading-b11">
+						<div class="card-body">
+							<p class="ergebnis">
+								Befehl 11: Fahren Sie bis zur Langsamfahrstelle höchstens mit der nach Fahrplan zugelassenen Geschwindigkeit.
+								Beachten Sie niedrigere Geschwindigkeiten gemäß Führerraumanzeige und Langsamfahrsignale.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b12">
+						<label><input name="b12" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b12" checked />
+							Befehl 12: Geschwindigkeitsbeschränkungen
+						</label>
+					</div>
+					<div id="body-b12" class="collapse show" aria-labelledby="heading-b12">
+						<div class="card-body">
+							<ol>
+								<li>
+									<p>
+										<button>Grund</button> <span>31: Verdacht auf Oberleitungsschäden</span>
+										<ul>
+											<li>Geschwindigkeit: auf Sicht</li>
+											<li><input type="checkbox" name="b12-4" /> nur für signalgeführten Zug</li>
+										</ul>
+									</p>
+									<p>
+										<button>Ort von</button> <span>Abzw Leopoldsgrün, Sig 5108</span>
+									</p>
+									<p>
+										<button>Ort bis</button> <span>Bf Walfdorf, Sig F</span>
+									</p>
+								</li>
+								<li>
+									<p>
+										<button>Grund</button> <span>5: Einfahrt in teilweise besetztes Gleis,
+											nur teilweise befahrbares Gleis oder besonders kurzes Stumpfgleis</span>
+										<ul>
+											<li>Geschwindigkeit: 20 km/h</li>
+											<li><input type="checkbox" name="b12-4" /> nur für signalgeführten Zug</li>
+										</ul>
+									</p>
+									<p>
+										<button>Ort von</button> <span>Bf Walfdorf, Sig F</span>
+									</p>
+									<p>
+										<button>Ort bis</button> <span>Bf Walfdorf, Sig 302V</span>
+									</p>
+								</li>
+							</ol>
+							<p>
+								<label><input type="checkbox" name="b12-1" /> Befehl 12.1: Stellen Sie sicher ob das Gleis befahrbar ist</label>
+								<ul>
+									<li>
+										<label>Meldestelle: <select name="b12-1-meldestelle" />
+											<option>Berg, Fdl</option>
+											<option>Berg, Wärter</option>
+											<option>Cella, Fdl</option>
+											<option>Derau, Fdl</option>
+											<option>Leopoldsgrün, Fdl</option>
+											<option>Pörsten, Fdl</option>
+											<option selected>Walfdorf, Fdl</option>
+										</select></label>
+									</li>
+								</ul>
+							</p>
+							<p>
+								<label><input type="checkbox" name="b12-2" /> Befehl 12.2: Zp 1 vor Bahnübergang abgeben</label>
+							</p>
+							<p>
+								<label><input type="checkbox" name="b12-3" checked /> Befehl 12.3: Schauen Sie nach Oberleitungsschäden</label>
+								<ul>
+									<li>
+										<label>Meldestelle: <select name="b12-3-meldestelle" />
+											<option>Berg, Fdl</option>
+											<option>Berg, Wärter</option>
+											<option>Cella, Fdl</option>
+											<option>Derau, Fdl</option>
+											<option>Leopoldsgrün, Fdl</option>
+											<option>Pörsten, Fdl</option>
+											<option selected>Walfdorf, Fdl</option>
+										</select></label>
+									</li>
+								</ul>
+							</p>
+							<p>
+								<label><input type="checkbox" name="b12-4" checked /> Befehl 12.4: PZB-Wirksamkeit:</label>
+								<ul>
+									<li><label><input name="b12-4-wirksam" type="radio" checked /> PZB ständig wirksam</li>
+									<li><label><input name="b12-4-wirksam" type="radio" /> PZB ständig unwirksam</li>
+								</ul>
+								<button>Ort</button> <span>km 16,200</span>
+							</p>
+							<p>
+								<label><input type="checkbox" name="b12-5" /> Befehl 12.5: Warnen von Personen im Gleisbereich</label>
+							</p>
+							<p>
+								<label><input type="checkbox" name="b12-5" disabled /> Befehl 12.6: Geschwindigkeiten mit *) nur signalgeführt</label>
+							</p>
+							<p>
+								<label><input type="checkbox" name="b12-6" /> Befehl 12.6: Zp 1 bei Annäherung an den Bahnsteig</label>
+							</p>
+							
+							<p class="ergebnis">
+								Befehl 12: Sie müssen folgende Geschwindigkeitsbeschränkungen beachten:
+								<table class="table">
+									<tr>
+										<th scope="col">km/h</th>
+										<th scope="col">auf Sicht</th>
+										<th scope="col">im / auf / zwischen<br>Bf / Bft / Abzw / Üst</th>
+										<th scope="col">und<br>Bf / Bft / Abzw / Üst</th>
+										<th scope="col">in / von<br>km / Sig</th>
+										<th scope="col">bis<br>km / Sig</th>
+										<th scope="col"> Grund Nr.</th>
+									</tr>
+									<tr>
+										<td></td>
+										<td>auf Sicht</td>
+										<td>Abzw Leopoldsgrün</td>
+										<td>Bf Walfdorf</td>
+										<td>Sig 5108</td>
+										<td>Sig F</td>
+										<td>31</td>
+									</tr>
+									<tr>
+										<td>20</td>
+										<td><span style="text-decoration: line-through">auf Sicht</span></td>
+										<td>Bf Walfdorf</td>
+										<td></td>
+										<td>Sig F</td>
+										<td>Sig 302V</td>
+										<td>5</td>
+									</tr>
+								</table>
+								<br>
+								Befehl 12.3: Schauen Sie nach Oberleitungsschäden. Melden Sie das Ergebnis an Fdl Walfdorf.
+								<br>
+								Befehl 12.4: PZB in km 16,200 ständig wirksam.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b13">
+						<label><input name="b13" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b13" />
+							Befehl 13: Entbindung vom Fahren auf Sicht
+						</label>
+					</div>
+					<div id="body-b13" class="collapse" aria-labelledby="heading-b13">
+						<div class="card-body">
+							<p>
+								<label>Betriebsstelle von: <select name="b13-betriebsstelle1" />
+									<option>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option selected>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							<p>
+								<label>Betriebsstelle nach: <select name="b13-betriebsstelle2" />
+									<option>Berg, Bf</option>
+									<option>Cella, Bf</option>
+									<option>Derau, Bf</option>
+									<option selected>Leopoldsgrün, Abzw</option>
+									<option>Pörsten, Bf</option>
+									<option>Schattenbahnhof, Bf</option>
+									<option>Spendenkasse, Bf</option>
+									<option>Tessin, Bf</option>
+									<option>Walfdorf, Bf</option>
+								</select></label>
+							</p>
+							
+							<p class="ergebnis">
+								Befehl 13: Sie sind vom Fahren auf Sicht zwischen Bf Walfdorf und Abzw Leopoldsgrün entbunden.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="abschnitt card">
+					<div class="card-header" id="heading-b14">
+						<label><input name="b14" class="collapsed" type="checkbox" data-toggle="collapse" href="#body-b14" />
+							Befehl 14: Freitext
+						</label>
+					</div>
+					<div id="body-b14" class="collapse" aria-labelledby="heading-b14">
+						<div class="card-body">
+							<textarea></textarea>
+							
+							<p class="ergebnis">
+								Befehl 14: 
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</body>
+</html>
