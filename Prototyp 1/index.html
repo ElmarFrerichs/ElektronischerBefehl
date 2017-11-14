@@ -481,10 +481,58 @@
 							<ol>
 								<li>
 									<p>
-										<button>Grund</button> <span>31: Verdacht auf Oberleitungsschäden</span>
+										Grund:
+										<select name="b12-p1-grund">
+											<optgroup label="Gleisbelegung, Zugfolge">
+												<option>1: Gleis kann besetzt sein</option>
+												<option>2: Fahrzeuge im Gleis</option>
+												<option>3: Mehrere Sperrfahrten unterwegs</option>
+												<option>4: Einfahrt in Stumpfgleis</option>
+												<option>5: Einfahrt in teilweise besetztes Gleis, nur teilweise befahrbares Gleis oder besonders kurzes Stumpfgleis</option>
+												<option>6: Kein Durchrutschweg</option>
+												<option>7: Verständigung zwischen den Zugmeldestellen gestört</option>
+												<option>8: Auf der Strecke ruht die Arbeit</option>
+												<option>9: Reisezug muss ausnahmsweise über Güterzuggleis fahren</option>
+											</optgroup>
+											
+											<optgroup label="Bahnübergänge, Reisendenübergänge, Spurrillen">
+												<option>10: Bahnübergang nicht ausreichend gesichert</option>
+												<option>11: Spurrillen nicht von Eis und Schnee gereinigt</option>
+												<option>12: Reisendenübergang nicht gesichert</option>
+											</optgroup>
+											
+											<optgroup label="Arbeiten, La">
+												<option>10: Bauarbeiten</option>
+												<option>21: Unbefahrbare Stelle im gesperrten Gleis</option>
+												<option>22: Zustand nach Bauarbeiten</option>
+												<option>23: Arbeitsstelle nicht benachrichtigt</option>
+												<option>24: Niedrigere Geschwindigkeit gegenüber der La</option>
+												<option>25: Beschäftigte im gesperrten Gleis</option>
+											</optgroup>
+											
+											<optgroup label="Mängel an Bahnanlagen">
+												<option>30: Mangel am Oberbau</option>
+												<option selected>31: Verdacht auf Oberleitungsschäden</option>
+												<option>32: Verdacht auf Unwetterschäden (Erdrutsch, Sturmschäden usw.)</option>
+												<option>33: Verdacht auf Eiszapfen im Tunnel</option>
+												<option>34: PZB-Streckeneinrichtung gestört</option>
+												<option>35: Weichen außer Abhängigkeit von Signalen</option>
+												<option>36: Weiche mit HV 73 ohne Sperrvorrichtung gesichert</option>
+												<option>37: Heißläuferortungsanlage / Festbremsortungsanlage gestört</option>
+												<option>38: Warnen von Reisenden auf Behnsteigen nicht möglich</option>
+												<option>39: Reisende nicht über Bahnsteigänderung informiert</option>
+											</optgroup>
+											
+											<optgroup label="Besonderheiten am Zug">
+												<option>40: Engstelle für Lü-Sendungen</option>
+												<option>41: Eingeschränkte Tragfähigkeit der Bahnanlagen bei Schwerwagen</option>
+												<option>42: Spitzensignal unvollständig</option>
+												<option>43: Windwarnung</option>
+											</optgroup>
+										</select>
 										<ul>
 											<li>Geschwindigkeit: auf Sicht</li>
-											<li><input type="checkbox" name="b12-4" /> nur für signalgeführten Zug</li>
+											<li><input type="checkbox" name="b12-p1-signalgefuehrt" /> nur für signalgeführten Zug</li>
 										</ul>
 									</p>
 									<p>
@@ -496,11 +544,58 @@
 								</li>
 								<li>
 									<p>
-										<button>Grund</button> <span>5: Einfahrt in teilweise besetztes Gleis,
-											nur teilweise befahrbares Gleis oder besonders kurzes Stumpfgleis</span>
+										Grund:
+										<select name="b12-p2-grund">
+											<optgroup label="Gleisbelegung, Zugfolge">
+												<option>1: Gleis kann besetzt sein</option>
+												<option>2: Fahrzeuge im Gleis</option>
+												<option>3: Mehrere Sperrfahrten unterwegs</option>
+												<option>4: Einfahrt in Stumpfgleis</option>
+												<option selected>5: Einfahrt in teilweise besetztes Gleis, nur teilweise befahrbares Gleis oder besonders kurzes Stumpfgleis</option>
+												<option>6: Kein Durchrutschweg</option>
+												<option>7: Verständigung zwischen den Zugmeldestellen gestört</option>
+												<option>8: Auf der Strecke ruht die Arbeit</option>
+												<option>9: Reisezug muss ausnahmsweise über Güterzuggleis fahren</option>
+											</optgroup>
+											
+											<optgroup label="Bahnübergänge, Reisendenübergänge, Spurrillen">
+												<option>10: Bahnübergang nicht ausreichend gesichert</option>
+												<option>11: Spurrillen nicht von Eis und Schnee gereinigt</option>
+												<option>12: Reisendenübergang nicht gesichert</option>
+											</optgroup>
+											
+											<optgroup label="Arbeiten, La">
+												<option>10: Bauarbeiten</option>
+												<option>21: Unbefahrbare Stelle im gesperrten Gleis</option>
+												<option>22: Zustand nach Bauarbeiten</option>
+												<option>23: Arbeitsstelle nicht benachrichtigt</option>
+												<option>24: Niedrigere Geschwindigkeit gegenüber der La</option>
+												<option>25: Beschäftigte im gesperrten Gleis</option>
+											</optgroup>
+											
+											<optgroup label="Mängel an Bahnanlagen">
+												<option>30: Mangel am Oberbau</option>
+												<option>31: Verdacht auf Oberleitungsschäden</option>
+												<option>32: Verdacht auf Unwetterschäden (Erdrutsch, Sturmschäden usw.)</option>
+												<option>33: Verdacht auf Eiszapfen im Tunnel</option>
+												<option>34: PZB-Streckeneinrichtung gestört</option>
+												<option>35: Weichen außer Abhängigkeit von Signalen</option>
+												<option>36: Weiche mit HV 73 ohne Sperrvorrichtung gesichert</option>
+												<option>37: Heißläuferortungsanlage / Festbremsortungsanlage gestört</option>
+												<option>38: Warnen von Reisenden auf Behnsteigen nicht möglich</option>
+												<option>39: Reisende nicht über Bahnsteigänderung informiert</option>
+											</optgroup>
+											
+											<optgroup label="Besonderheiten am Zug">
+												<option>40: Engstelle für Lü-Sendungen</option>
+												<option>41: Eingeschränkte Tragfähigkeit der Bahnanlagen bei Schwerwagen</option>
+												<option>42: Spitzensignal unvollständig</option>
+												<option>43: Windwarnung</option>
+											</optgroup>
+										</select>
 										<ul>
 											<li>Geschwindigkeit: 20 km/h</li>
-											<li><input type="checkbox" name="b12-4" /> nur für signalgeführten Zug</li>
+											<li><input type="checkbox" name="b12-p2-signalgefuehrt" /> nur für signalgeführten Zug</li>
 										</ul>
 									</p>
 									<p>
@@ -510,12 +605,81 @@
 										<button>Ort bis</button> <span>Bf Walfdorf, Sig 302V</span>
 									</p>
 								</li>
+								<li>
+									<p>
+										Grund:
+										<select name="b12-p3-grund">
+											<optgroup label="Gleisbelegung, Zugfolge">
+												<option>1: Gleis kann besetzt sein</option>
+												<option>2: Fahrzeuge im Gleis</option>
+												<option>3: Mehrere Sperrfahrten unterwegs</option>
+												<option>4: Einfahrt in Stumpfgleis</option>
+												<option>5: Einfahrt in teilweise besetztes Gleis, nur teilweise befahrbares Gleis oder besonders kurzes Stumpfgleis</option>
+												<option>6: Kein Durchrutschweg</option>
+												<option>7: Verständigung zwischen den Zugmeldestellen gestört</option>
+												<option>8: Auf der Strecke ruht die Arbeit</option>
+												<option>9: Reisezug muss ausnahmsweise über Güterzuggleis fahren</option>
+											</optgroup>
+											
+											<optgroup label="Bahnübergänge, Reisendenübergänge, Spurrillen">
+												<option>10: Bahnübergang nicht ausreichend gesichert</option>
+												<option>11: Spurrillen nicht von Eis und Schnee gereinigt</option>
+												<option>12: Reisendenübergang nicht gesichert</option>
+											</optgroup>
+											
+											<optgroup label="Arbeiten, La">
+												<option>10: Bauarbeiten</option>
+												<option>21: Unbefahrbare Stelle im gesperrten Gleis</option>
+												<option>22: Zustand nach Bauarbeiten</option>
+												<option>23: Arbeitsstelle nicht benachrichtigt</option>
+												<option>24: Niedrigere Geschwindigkeit gegenüber der La</option>
+												<option>25: Beschäftigte im gesperrten Gleis</option>
+											</optgroup>
+											
+											<optgroup label="Mängel an Bahnanlagen">
+												<option selected>30: Mangel am Oberbau</option>
+												<option>31: Verdacht auf Oberleitungsschäden</option>
+												<option>32: Verdacht auf Unwetterschäden (Erdrutsch, Sturmschäden usw.)</option>
+												<option>33: Verdacht auf Eiszapfen im Tunnel</option>
+												<option>34: PZB-Streckeneinrichtung gestört</option>
+												<option>35: Weichen außer Abhängigkeit von Signalen</option>
+												<option>36: Weiche mit HV 73 ohne Sperrvorrichtung gesichert</option>
+												<option>37: Heißläuferortungsanlage / Festbremsortungsanlage gestört</option>
+												<option>38: Warnen von Reisenden auf Behnsteigen nicht möglich</option>
+												<option>39: Reisende nicht über Bahnsteigänderung informiert</option>
+											</optgroup>
+											
+											<optgroup label="Besonderheiten am Zug">
+												<option>40: Engstelle für Lü-Sendungen</option>
+												<option>41: Eingeschränkte Tragfähigkeit der Bahnanlagen bei Schwerwagen</option>
+												<option>42: Spitzensignal unvollständig</option>
+												<option>43: Windwarnung</option>
+											</optgroup>
+										</select>
+										<ul>
+											<li>Geschwindigkeit:
+												<ul>
+													<li><input type="radio" name="b12-p3-geschwindigkeit" /> auf Sicht</li>
+													<li><input type="radio" name="b12-p3-geschwindigkeit" checked />
+														<input type="numeric" value="20" size="3" /> km/h</li>
+												</ul>
+											</li>
+											<li><input type="checkbox" name="b12-p3-signalgefuehrt" /> nur für signalgeführten Zug</li>
+										</ul>
+									</p>
+									<p>
+										<button>Ort von</button> <span>Bf Walfdorf, Sig P 2</span>
+									</p>
+									<p>
+										<button>Ort bis</button> <span>Bf Cella, Sig F</span>
+									</p>
+								</li>
 							</ol>
 							<p>
-								<label><input type="checkbox" name="b12-1" /> Befehl 12.1: Stellen Sie sicher ob das Gleis befahrbar ist</label>
+								<label><input type="checkbox" name="b12-1" disabled /> Befehl 12.1: Stellen Sie sicher ob das Gleis befahrbar ist</label>
 								<ul>
 									<li>
-										<label>Meldestelle: <select name="b12-1-meldestelle" />
+										<label>Meldestelle: <select name="b12-1-meldestelle" disabled />
 											<option>Berg, Fdl</option>
 											<option>Berg, Wärter</option>
 											<option>Cella, Fdl</option>
@@ -528,10 +692,10 @@
 								</ul>
 							</p>
 							<p>
-								<label><input type="checkbox" name="b12-2" /> Befehl 12.2: Zp 1 vor Bahnübergang abgeben</label>
+								<label><input type="checkbox" name="b12-2" disabled /> Befehl 12.2: Zp 1 vor Bahnübergang abgeben</label>
 							</p>
 							<p>
-								<label><input type="checkbox" name="b12-3" checked /> Befehl 12.3: Schauen Sie nach Oberleitungsschäden</label>
+								<label><input type="checkbox" name="b12-3" disabled checked /> Befehl 12.3: Schauen Sie nach Oberleitungsschäden</label>
 								<ul>
 									<li>
 										<label>Meldestelle: <select name="b12-3-meldestelle" />
@@ -547,21 +711,21 @@
 								</ul>
 							</p>
 							<p>
-								<label><input type="checkbox" name="b12-4" checked /> Befehl 12.4: PZB-Wirksamkeit:</label>
+								<label><input type="checkbox" name="b12-4" disabled /> Befehl 12.4: PZB-Wirksamkeit:</label>
 								<ul>
-									<li><label><input name="b12-4-wirksam" type="radio" checked /> PZB ständig wirksam</li>
-									<li><label><input name="b12-4-wirksam" type="radio" /> PZB ständig unwirksam</li>
+									<li><label><input name="b12-4-wirksam" type="radio" disabled /> PZB ständig wirksam</li>
+									<li><label><input name="b12-4-wirksam" type="radio" disabled /> PZB ständig unwirksam</li>
 								</ul>
 								<button>Ort</button> <span>km 16,200</span>
 							</p>
 							<p>
-								<label><input type="checkbox" name="b12-5" /> Befehl 12.5: Warnen von Personen im Gleisbereich</label>
+								<label><input type="checkbox" name="b12-5" disabled /> Befehl 12.5: Warnen von Personen im Gleisbereich</label>
 							</p>
 							<p>
 								<label><input type="checkbox" name="b12-5" disabled /> Befehl 12.6: Geschwindigkeiten mit *) nur signalgeführt</label>
 							</p>
 							<p>
-								<label><input type="checkbox" name="b12-6" /> Befehl 12.6: Zp 1 bei Annäherung an den Bahnsteig</label>
+								<label><input type="checkbox" name="b12-6" disabled /> Befehl 12.6: Zp 1 bei Annäherung an den Bahnsteig</label>
 							</p>
 							
 							<p class="ergebnis">
@@ -597,8 +761,6 @@
 								</table>
 								<br>
 								Befehl 12.3: Schauen Sie nach Oberleitungsschäden. Melden Sie das Ergebnis an Fdl Walfdorf.
-								<br>
-								Befehl 12.4: PZB in km 16,200 ständig wirksam.
 							</p>
 						</div>
 					</div>
