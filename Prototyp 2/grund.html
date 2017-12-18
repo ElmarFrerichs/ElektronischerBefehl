@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Prototyp 2</title>
+		<style>
+			* {
+				--webkit-box-sizing: border-box;
+				--moz-box-sizing: border-box;
+				box-sizing: border-box;
+			}
+			html {
+				font-family: sans-serif;
+			}
+			body {
+				width: 720px;
+			}
+			
+			.buttons {
+				margin: 10px 0;
+			}
+			
+			.gruende {
+				width: 100%;
+				border-collapse: collapse;
+			}
+			.gruende th, .gruende td {
+				padding: 4px;
+				border: 1px solid black;
+			}
+			.gruende th {
+				white-space: nowrap;
+			}
+			.gruende tr:not(.gruppe) td:first-child {
+				text-align: right;
+			}
+			.gruende .gruppe td {
+				padding: 4px;
+				font-weight: bold;
+			}
+			.gruende [data-grund] {
+				cursor: pointer;
+			}
+			.gruende [data-grund].angekreuzt {
+				background-color: lightgrey;
+			}
+			
+			td.seamless {
+				margin-left: 0;
+				margin-right: 0;
+				padding-left: 0;
+				padding-right: 0;
+			}
+			
+			.buttons input[type="number"] {
+				width: 100px;
+				border: none;
+				border-bottom: 1px dotted black;
+				padding-left: 4px;
+				font-size: 100%;
+				font-style: italic;
+			}
+			
+			.buttons .absatz {
+				margin-left: 20px;
+				border-left: 1px solid black;
+				padding: 5px;
+			}
+		</style>
+		<script
+			src="https://code.jquery.com/jquery-3.2.1.min.js"
+			integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+			crossorigin="anonymous"></script>
+		<script type="text/javascript">
+			var ANGEKREUZT_CLASS = "angekreuzt";
+			
+			var grund = "";
+			var geschwindigkeit = "";
+			var aufSicht = true;
+			
+			var urlParams = new URL(window.location.href).searchParams;
+			var zeile = urlParams.get("zeile");
+			var urlGrund = urlParams.get("grund");
+			var urlGeschwindigkeit = urlParams.get("geschwindigkeit");
+			var urlAufSicht = urlParams.get("aufSicht");
+			var urlMitStern = urlParams.get("mitStern");
+			
+			function setGrund(neuerGrund) {
+				grund = parseInt(neuerGrund);
+				setzeGeschwindigkeitsfelderAktiv(false);
+				
+				switch(grund) {
+					case 1:
+					case 2:
+					case 3:
+					case 7:
+					case 21:
+					case 23:
+					case 31:
+					case 32:
+					case 33:
+					case 39:
+						geschwindigkeit = "";
+						aufSicht = true;
+						break;
+					case 25:
+						geschwindigkeit = 20;
+						aufSicht = true;
+						break;
+					case 12:
+					case 36:
+						geschwindigkeit = 5;
+						aufSicht = false;
+						break;
+					case 40:
+						geschwindigkeit = 10;
+						aufSicht = false;
+						break;
+					case 5:
+					case 10:
+						geschwindigkeit = 20;
+						aufSicht = false;
+						break;
+					case 4:
+					case 6:
+					case 11:
+						geschwindigkeit = 30;
+						aufSicht = false;
+						break;
+					case 9:
+					case 42:
+						geschwindigkeit = 40;
+						aufSicht = false;
+						break;
+					case 8:
+					case 34:
+					case 35:
+						geschwindigkeit = 50;
+						aufSicht = false;
+						break;
+					case 43:
+						geschwindigkeit = 80;
+						aufSicht = false;
+						break;
+					case 37:
+						geschwindigkeit = 200;
+						aufSicht = false;
+						break;
+					case 20:
+					case 22:
+					case 24:
+					case 30:
+					case 38:
+					case 41:
+						geschwindigkeit = getGeschwindigkeitsFeld();
+						aufSicht = getAufSichtFeld;
+						setzeGeschwindigkeitsfelderAktiv(true);
+						break;
+					default:
+						console.error("Grund nicht gefunden", grund);
+				}
+				
+				$('[data-grund]').removeClass(ANGEKREUZT_CLASS);
+				$('[data-grund="'+grund+'"]').addClass(ANGEKREUZT_CLASS);
+			}
+			function setzeGeschwindigkeitsfelderAktiv(wert) {
+				$("#ipt-geschwindigkeit").prop("disabled", !wert);
+				$("#cbx-aufSicht").prop("disabled", !wert);
+			}
+			function getGeschwindigkeitsFeld() {
+				return $("#ipt-geschwindigkeit").val();
+			}
+			function setGeschwindigkeitsFeld(wert) {
+				$("#ipt-geschwindigkeit").val(wert);
+			}
+			function getAufSichtFeld() {
+				return $("#cbx-aufSicht").prop("checked");
+			}
+			function setAufSichtFeld(wert) {
+				$("#cbx-aufSicht").prop("checked", wert);
+			}
+			function getSignalgeführt() {
+				return $("#cbx-signalgefuehrt").prop("checked");
+			}
+			function setSignalgeführt(wert) {
+				$("#cbx-signalgefuehrt").prop("checked", wert);
+			}
+			
+			$().ready(function() {
+				$("tr[data-grund]").click(function() {
+					var neuerGrund = $(this).attr("data-grund");
+					setGrund(neuerGrund);
+				});
+				
+				$("#ipt-geschwindigkeit").on("change", function() {
+					geschwindigkeit = getGeschwindigkeitsFeld();
+				});
+				$("#cbx-aufSicht").on("change", function() {
+					aufSicht = getAufSichtFeld;
+				});
+				
+				$(".btn-b14").click(function() {
+					alert("Verwende Befehl 14");
+				});
+				$(".btn-waehlen").click(function() {
+					var erfolg = window.opener.setGrund(zeile, grund, geschwindigkeit, aufSicht, getSignalgeführt());
+					if(erfolg) {
+						window.close();
+					}
+				});
+				
+				if(urlGrund) {
+					setGrund(urlGrund);
+				}
+				if(urlGeschwindigkeit) {
+					setGeschwindigkeitsFeld(urlGeschwindigkeit);
+				}
+				if(urlAufSicht) {
+					setAufSichtFeld(urlAufSicht);
+				}
+				if(urlMitStern) {
+					setSignalgeführt(urlMitStern);
+				}
+			});
+		</script>
+	</head>
+	<body>
+		<div class="buttons">
+			<button class="btn-b14">Grund in Befehl 14</button>
+		</div>
+		<table class="gruende">
+			<tr class="kopf">
+				<th>Grund<br>Nr.</th>
+				<th>Anlass für Befehl 12</th>
+				<th>Auftrag im Befehl 12,<br>Spalten 1 bzw. 2</th>
+			</tr>
+			<tr class="gruppe">
+				<td colspan="3">Gleisbelegung, Zugfolge</td>
+			</tr>
+			<tr data-grund="1">
+				<td>1</td>
+				<td>Gleis kann besetzt sein</td>
+				<td>auf Sicht</td>
+			</tr>
+			<tr data-grund="2">
+				<td>2</td>
+				<td>Fahrzeuge im Gleis</td>
+				<td>auf Sicht</td>
+			</tr>
+			<tr data-grund="3">
+				<td>3</td>
+				<td>Mehrere Sperrfahrten unterwegs</td>
+				<td>auf Sicht</td>
+			</tr>
+			<tr data-grund="4">
+				<td>4</td>
+				<td>Einfahrt in Stumpfgleis</td>
+				<td>30 km/h</td>
+			</tr>
+			<tr data-grund="5">
+				<td>5</td>
+				<td>Einfahrt in teilweise besetztes Gleis, nur teilweise befahrbares Gleis oder besonders kurzes Stumpfgleis</td>
+				<td>20 km/h</td>
+			</tr>
+			<tr data-grund="6">
+				<td>6</td>
+				<td>Kein Durchrutschweg</td>
+				<td>30 km/h</td>
+			</tr>
+			<tr data-grund="7">
+				<td>7</td>
+				<td>Verständigung zwischen den Zugmeldestellen gestört</td>
+				<td>auf Sicht</td>
+			</tr>
+			<tr data-grund="8">
+				<td>8</td>
+				<td>Auf der Strecke ruht die Arbeit</td>
+				<td>50 km/h</td>
+			</tr>
+			<tr data-grund="9">
+				<td>9</td>
+				<td>Reisezug muss ausnahmsweise über Güterzuggleis fahren</td>
+				<td>40 km/h</td>
+			</tr>
+
+			<tr class="gruppe">
+				<td colspan="3">Bahnübergänge, Reisendenübergänge, Spurrillen</td>
+			</tr>
+			<tr data-grund="10">
+				<td>10</td>
+				<td>Bahnübergang nicht ausreichend gesichert</td>
+				<td>20 km/h</td>
+			</tr>
+			<tr data-grund="11">
+				<td>11</td>
+				<td>Spurrillen nicht von Eis und Schnee gereinigt</td>
+				<td>30 km/h</td>
+			</tr>
+			<tr data-grund="12">
+				<td>12</td>
+				<td>Reisendenübergang nicht gesichert</td>
+				<td>5 km/h</td>
+			</tr>
+
+			<tr class="gruppe">
+				<td colspan="3">Arbeiten, La</td>
+			</tr>
+			<tr data-grund="20">
+				<td>20</td>
+				<td>Bauarbeiten</td>
+				<td>unterschiedlich</td>
+			</tr>
+			<tr data-grund="21">
+				<td>21</td>
+				<td>Unbefahrbare Stelle im gesperrten Gleis</td>
+				<td>auf Sicht</td>
+			</tr>
+			<tr data-grund="22">
+				<td>22</td>
+				<td>Zustand nach Bauarbeiten</td>
+				<td>unterschiedlich</td>
+			</tr>
+			<tr data-grund="23">
+				<td>23</td>
+				<td>Arbeitsstelle nicht benachrichtigt</td>
+				<td>auf Sicht</td>
+			</tr>
+			<tr data-grund="24">
+				<td>24</td>
+				<td>Niedrigere Geschwindigkeit gegenüber der La</td>
+				<td>unterschiedlich</td>
+			</tr>
+			<tr data-grund="25">
+				<td>25</td>
+				<td>Beschäftigte im gesperrten Gleis</td>
+				<td>20 km/h + auf Sicht</td>
+			</tr>
+
+			<tr class="gruppe">
+				<td colspan="3">Mängel an Bahnanlagen</td>
+			</tr>
+			<tr data-grund="30">
+				<td>30</td>
+				<td>Mangel am Oberbau</td>
+				<td>unterschiedlich</td>
+			</tr>
+			<tr data-grund="31">
+				<td>31</td>
+				<td>Verdacht auf Oberleitungsschäden</td>
+				<td>auf Sicht</td>
+			</tr>
+			<tr data-grund="32">
+				<td>32</td>
+				<td>Verdacht auf Unwetterschäden (Erdrutsch, Sturmschäden usw.)</td>
+				<td>auf Sicht</td>
+			</tr>
+			<tr data-grund="33">
+				<td>33</td>
+				<td>Verdacht auf Eiszapfen im Tunnel</td>
+				<td>auf Sicht</td>
+			</tr>
+			<tr data-grund="34">
+				<td>34</td>
+				<td>PZB-Streckeneinrichtung gestört</td>
+				<td>50 km/h</td>
+			</tr>
+			<tr data-grund="35">
+				<td>35</td>
+				<td>Weichen außer Abhängigkeit von Signalen</td>
+				<td>50 km/h</td>
+			</tr>
+			<tr data-grund="36">
+				<td>36</td>
+				<td>Weiche mit HV 73 ohne Sperrvorrichtung gesichert</td>
+				<td>5 km/h</td>
+			</tr>
+			<tr data-grund="37">
+				<td>37</td>
+				<td>Heißläuferortungsanlage / Festbremsortungsanlage gestört</td>
+				<td>200 km/h</td>
+			</tr>
+			<tr data-grund="38">
+				<td>38</td>
+				<td>Warnen von Reisenden auf Bahnsteigen nicht möglich</td>
+				<td>unterschiedlich</td>
+			</tr>
+			<tr data-grund="39">
+				<td>39</td>
+				<td>Reisende nicht über Bahnsteigänderung informiert</td>
+				<td>auf Sicht</td>
+			</tr>
+
+			<tr class="gruppe">
+				<td colspan="3">Besonderheiten am Zug</td>
+			</tr>
+			<tr data-grund="40">
+				<td>40</td>
+				<td>Engstelle für Lü-Sendungen</td>
+				<td>10 km/h</td>
+			</tr>
+			<tr data-grund="41">
+				<td>41</td>
+				<td>Eingeschränkte Tragfähigkeit der Bahnanlagen bei Schwerwagen</td>
+				<td>unterschiedlich</td>
+			</tr>
+			<tr data-grund="42">
+				<td>42</td>
+				<td>Spitzensignal unvollständig</td>
+				<td>40 km/h</td>
+			</tr>
+			<tr data-grund="43">
+				<td>43</td>
+				<td>Windwarnung</td>
+				<td>80 km/h</td>
+			</tr>
+		</table>
+		
+		<div class="buttons">
+			Falls unterschiedliche Geschwindigkeiten:
+			<div class="absatz">
+				<p>
+					<label>Geschwindigkeit: <input type="number" id="ipt-geschwindigkeit" disabled> km/h</label>
+				</p>
+				<p>
+					<label><input type="checkbox" id="cbx-aufSicht" disabled> auf Sicht</label>
+				</p>
+			</div>
+				<p>
+					<label><input type="checkbox" id="cbx-signalgefuehrt"> Gilt nur, wenn Zug signalgeführt ist</label>
+				</p>
+			<p>
+				<button class="btn-b14">Grund in Befehl 14</button>
+				<button class="btn-waehlen">Grund wählen</button>
+			</p>
+		</div>
+	</body>
+</html>

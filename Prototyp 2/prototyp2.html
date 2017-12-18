@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Prototyp 2</title>
+		<style>
+			* {
+				--webkit-box-sizing: border-box;
+				--moz-box-sizing: border-box;
+				box-sizing: border-box;
+			}
+			html {
+				font-family: sans-serif;
+			}
+			body {
+				margin: 0;
+				width: 1800px;
+			}
+			
+			div.flex {
+				display: flex;
+			}
+			.grow {
+				flex-grow: 1;
+			}
+			
+			.vordruck {
+				text-align: center;
+				width: 100%;
+			}
+			
+			table {
+				margin: 4px 0;
+			}
+			
+			.main {
+				width: 100%;
+				margin: 0;
+			}
+			.main > tbody > tr > td {
+				width: 50%;
+				padding: 10px;
+				vertical-align: top;
+			}
+			.kopf {
+				display: flex;
+				flex-direction: row;
+				width: 100%;
+				border: 1px solid black;
+			}
+			.kopf div {
+				padding: 2px;
+			}
+			.kopf div.senkrecht {
+				display: flex;
+				flex-direction: row;
+			}
+			.kopf div.waagerecht {
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+			}
+			.kopf .fett {
+				font-weight: bold;
+				font-size: 120%;
+				text-align: center;
+			}
+			
+			.befehl {
+				width: 100%;
+				border-collapse: collapse;
+			}
+			.befehl > tbody > tr > td {
+				vertical-align: top;
+			}
+			.befehl > tbody > tr:not(.empty) > td:first-child {
+				height: 30px;
+				width: 30px;
+				border: 1px solid black;
+			}
+			tr.angekreuzt > td:first-child {
+				background-image: url("kreuz.png");
+			}
+			.befehl > tbody > tr:not(.empty) > td:nth-child(2) {
+				height: 30px;
+				width: 35px;
+				border: 1px solid black;
+				text-align: center;
+			}
+			.befehl > tbody > tr > td:nth-child(3) {
+				padding-left: 5px;
+				border: 1px solid black;
+			}
+			.mit-tabelle {
+				padding: 0 !important;
+			}
+			
+			table.content {
+				width: calc(100% + 2px);
+				margin-top: -1px;
+				margin-left: -1px;
+				margin-bottom: -1px;
+				border-collapse: collapse;
+				border: none;
+			}
+			.content > tbody > tr > th {
+				border: 1px solid black;
+			}
+			.content > tbody > tr > td {
+				border: 1px solid black;
+				height: 26px;
+				text-align: center;
+			}
+			.content .inaktiv {
+				background-color: lightgrey;
+			}
+			
+			.streichen,
+			.wegstreichen {
+				font-style: italic;
+				cursor: pointer;
+			}
+			.gestrichen {
+				text-decoration: line-through;
+			}
+			
+			.uebermittlungscode {
+				margin: 4px;
+				padding: 5px;
+				border: 2px solid black;
+			}
+			
+			.fuss {
+				width: 100%;
+			}
+			.fuss div {
+				width: 100%;
+				display: flex;
+			}
+			.fuss input {
+				flex-grow: 1;
+			}
+			
+			input[type="text"] {
+				border: none;
+				border-bottom: 1px dotted black;
+				padding-left: 4px;
+				font-size: 100%;
+				font-style: italic;
+			}
+			.content input[type="text"],
+			.content select {
+				border: none;
+				width: 100%;
+			}
+			
+			.width-btrst {
+				width: 300px;
+			}
+			.width-km {
+				width: 100px;
+			}
+			.width-number {
+				width: 50px;
+			}
+		</style>
+		<script
+			src="https://code.jquery.com/jquery-3.2.1.min.js"
+			integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+			crossorigin="anonymous"></script>
+		<script type="text/javascript">
+			var GESTRICHEN_CLASS = "gestrichen";
+			var ANGEKREUZT_CLASS = "angekreuzt";
+			
+			var daten = {};
+			
+			function isGestrichen(dataId) {
+				return $("[data-streichen="+dataId+"]").hasClass(GESTRICHEN_CLASS);
+			}
+			function streiche(dataId) {
+				return $("[data-streichen="+dataId+"]").addClass(GESTRICHEN_CLASS);
+			}
+			function streicheName(gruppe, name) {
+				return streiche(gruppe+"-"+name);
+			}
+			function streicheGruppe(gruppe) {
+				return $("[data-streichen|="+gruppe+"]").addClass(GESTRICHEN_CLASS);
+			}
+			function entstreiche(dataId) {
+				return $("[data-streichen="+dataId+"]").removeClass(GESTRICHEN_CLASS);
+			}
+			function entstreicheName(gruppe, name) {
+				return entstreiche(gruppe+"-"+name);
+			}
+			
+			function setDaten(befehl, gruppe, wert) {
+				if(daten[befehl] === undefined) {
+					daten[befehl] = {};
+				}
+				daten[befehl][gruppe] = wert;
+			}
+			function checkbox(zeile) {
+				if($('[data-zeile="'+zeile+'"]').prop("checked")) {
+					entstreiche(zeile);
+				} else {
+					streiche(zeile);
+				}
+			}
+			function textfeld(zeile) {
+				if($('[data-zeile="'+zeile+'"]').val() != "") {
+					entstreiche(zeile);
+				} else {
+					streiche(zeile);
+				}
+			}
+			
+			function waehleGrund(zeile) {
+				var alterGrund = $('[data-zeile="'+zeile+'"]').attr("data-grund");
+				var altGeschwindigkeit = $('[data-zeile="'+zeile+'"]').attr("data-geschwindigkeit");
+				var altAufSicht = $('[data-zeile="'+zeile+'"]').attr("data-aufSicht");
+				var altMitStern = $('[data-zeile="'+zeile+'"]').attr("data-mitStern");
+				
+				var url = "grund.html?zeile="+zeile;
+				if(alterGrund) {
+					url += "&grund="+alterGrund;
+				}
+				if(altGeschwindigkeit) {
+					url += "&geschwindigkeit="+altGeschwindigkeit;
+				}
+				if(altAufSicht) {
+					url += "&aufSicht=1";
+				}
+				if(altMitStern) {
+					url += "&mitStern=1";
+				}
+				window.open(url, "_blank", "dependent=yes");
+			}
+			function setGrund(zeile, grund, geschwindigkeit, aufSicht, mitStern) {
+				var feldGeschwindigkeit = geschwindigkeit;
+				if(mitStern) {
+					feldGeschwindigkeit += " *";
+				}
+				
+				$('[data-zeile="'+zeile+'"]').attr("data-grund", grund);
+				$('[data-zeile="'+zeile+'"]').attr("data-geschwindigkeit", geschwindigkeit);
+				$('[data-zeile="'+zeile+'"]').attr("data-aufSicht", aufSicht);
+				$('[data-zeile="'+zeile+'"]').attr("data-mitStern", mitStern);
+				
+				$('[data-zeile="'+zeile+'"] [data-fill="kmh"]').html(feldGeschwindigkeit);
+				$('[data-zeile="'+zeile+'"] [data-fill="grund"] button').html(grund);
+				
+				if(aufSicht) {
+					$('[data-zeile="'+zeile+'"] [data-fill="aufSicht"]').removeClass(GESTRICHEN_CLASS);
+				} else {
+					$('[data-zeile="'+zeile+'"] [data-fill="aufSicht"]').addClass(GESTRICHEN_CLASS);
+				}
+				
+				return true;
+			}
+			
+			$().ready(function() {
+				$(".streichen").click(function() {
+					var dataId = $(this).attr("data-streichen");
+					var [gruppe, name] = dataId.split("-");
+					
+					// Sonderfälle
+					switch(gruppe) {
+						case "b1_btrstelle":
+							switch(name) {
+								case "bf":
+								case "bft":
+									streicheGruppe("b1_text");
+									if(isGestrichen("b1_fahren-ein")) {
+										entstreiche("b1_text-im");
+									} else {
+										entstreiche("b1_text-inden");
+									}
+									break;
+								case "abzw":
+								case "uest":
+									streicheGruppe("b1_text");
+									entstreiche("b1_text-aufder");
+									break;
+								default:
+							}
+							break;
+						case "b1_fahren":
+							if(!isGestrichen("b1_btrstelle-bf") || !isGestrichen("b1_btrstelle-bft")) {
+								streicheGruppe("b1_text");
+								if(name == "weiter") {
+									entstreiche("b1_text-im");
+								} else {
+									entstreiche("b1_text-inden");
+								}
+							}
+							break;
+						case "b2_fahren":
+							if(name == "vorbei") {
+								streiche("b2_text-weiterfahren");
+							} else {
+								entstreiche("b2_text-weiterfahren");
+							}
+							break;
+						case "b7_ort":
+							if(name == "ne1") {
+								streiche("b7_text-inhoehedes");
+							} else {
+								entstreiche("b7_text-inhoehedes");
+							}
+							break;
+						case "b7_btrstelle":
+							switch(name) {
+								case "bf":
+								case "bft":
+									streicheGruppe("b7_text");
+									entstreiche("b7_text-des");
+									break;
+								case "abzw":
+								case "uest":
+									streicheGruppe("b7_text");
+									entstreiche("b7_text-der");
+									break;
+								default:
+							}
+							break;
+						case "b8_btrstelle":
+							switch(name) {
+								case "bf":
+								case "bft":
+									streicheGruppe("b8_text");
+									entstreiche("b8_text-im");
+									break;
+								case "abzw":
+								case "uest":
+									streicheGruppe("b8_text");
+									entstreiche("b8_text-auf");
+									break;
+								default:
+							}
+							break;
+						case "b10_fahren":
+							if(name == "signal") {
+								streiche("b10_text-waehlensie");
+							} else {
+								entstreiche("b10_text-waehlensie");
+							}
+							break;
+						case "b12_bue":
+							if(name == "bue") {
+								entstreiche("b12_2_text-bue");
+								streiche("b12_text-rue");
+							} else {
+								streiche("b12_text-bue");
+								entstreiche("b12_text-rue");
+							}
+							break;
+						default:
+					}
+					
+					streicheGruppe(gruppe)
+					entstreiche(dataId);
+				});
+				
+				$('tr[data-befehl^="b"] > td:first-child').click(function() {
+					var tr = $(this).parent('tr[data-befehl^="b"]:first');
+					var angekreuzt = tr.hasClass(ANGEKREUZT_CLASS);
+					var befehl = tr.attr("data-befehl");
+					
+					switch(befehl) {
+						case "b5.1":
+							if(!angekreuzt) {
+								$('[data-befehl="b5.2"]').removeClass(ANGEKREUZT_CLASS);
+							}
+							break;
+						case "b5.2":
+							if(!angekreuzt) {
+								$("[data-befehl='b5.1']").removeClass(ANGEKREUZT_CLASS);
+							}
+							break;
+						default:
+					}
+					
+					tr.toggleClass(ANGEKREUZT_CLASS);
+				});
+				
+				$(".aktivieren")
+					.each(function() {
+						checkbox($(this).attr("data-zeile"));
+					})
+					.on("change", function() {
+						checkbox($(this).attr("data-zeile"));
+					});
+				$(".optional")
+					.each(function() {
+						textfeld($(this).attr("data-zeile"));
+					})
+					.on("change", function() {
+						textfeld($(this).attr("data-zeile"));
+					});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="vordruck">Vordruck <input type="text" class="width-number" /> von <input type="text" class="width-number" /></div>
+		<table class="main">
+			<tr>
+				<td>
+					<div class="kopf">
+						<div rowspan="3" class="fett">Befehle<br>1 - 14</div>
+						<div class="waagerecht">
+							<div class="senkrecht">
+								<div>
+									Triebfahrzeugführer
+									<span class="streichen" data-streichen="verbandart-zug">Zug</span> -
+									<span class="streichen" data-streichen="verbandart-sperrf">Sperrfahrt</span> -
+									<span class="streichen" data-streichen="verbandart-sperrfkl">Sperrfahrt Kl</span> -
+									<br>
+									<span class="streichen" data-streichen="verbandart-schiebe">Schiebetriebfahrzeugführer für Zug</span> -
+									<span class="streichen" data-streichen="verbandart-rangier">Rangierfahrt</span>
+								</div>
+								<div class="grow">
+									<input type="text" style="width: 100%;" />
+								</div>
+							</div>
+							<div class="flex">
+								Standort: <input style="width: 150px;" type="text" />
+								<div>
+									in
+									<span class="streichen" data-streichen="ortgleis-rgl">Rgl</span> /
+									<span class="streichen" data-streichen="ortgleis-ggl">Ggl</span> /
+									<span class="streichen" data-streichen="ortgleis-gl">Gl</span>
+								</div>
+								<input class="grow" type="text" />
+							</div>
+						</div>
+					</div>
+					<table class="befehl">
+						<tr data-befehl="b1">
+							<td />
+							<td>1</td>
+							<td rowspan="2">
+								Sie dürfen -
+								<span class="streichen-text" data-streichen="b1_text-inden">in den</span> /
+								<span class="streichen-text" data-streichen="b1_text-im">im</span>
+								<span class="streichen" data-streichen="b1_btrstelle-bf">Bf</span> /
+								<span class="streichen" data-streichen="b1_btrstelle-bft">Bft</span> -
+								<span class="streichen-text" data-streichen="b1_text-aufder">auf der</span>
+								<span class="streichen" data-streichen="b1_btrstelle-abzw">Abzw</span> /
+								<span class="streichen" data-streichen="b1_btrstelle-uest">Üst</span>
+								<br>
+								<input type="text" style="width: 300px;" />
+								<span class="streichen" data-streichen="b1_fahren-weiter">weiterfahren</span> /
+								<span class="streichen" data-streichen="b1_fahren-ein">einfahren</span>.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+						<tr data-befehl="b1.1">
+							<td />
+							<td>1.1</td>
+							<td>
+								Sie müssen bis zum Erkennen der Stellung des nächsten Hauptsignals mit höchstens 40 km/h fahren.
+							</td>
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b2">
+							<td />
+							<td>2</td>
+							<td>
+								Sie dürfen -
+								<span class="streichen" data-streichen="b2_fahren-vorbei">vorbeifahren</span> -
+								<span class="streichen-text" data-streichen="b2_text-weiterfahren">weiterfahren nach</span>
+								<span class="streichen" data-streichen="b2_fahren-vorbeifahrt">Vorbeifahrt</span> /
+								<span class="streichen" data-streichen="b2_fahren-tr">TR</span> -
+								<span class="streichen" data-streichen="b2_praeposition-am">am</span> /
+								<span class="streichen" data-streichen="b2_praeposition-an">an</span> /
+								<span class="streichen" data-streichen="b2_praeposition-in">in</span>
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+							<td class="mit-tabelle">
+								<table class="content">
+									<tr>
+										<th>Signal usw.</th>
+										<th>Bezeichnung / km</th>
+										<th>Bf, Bft, Abzw, Üst, Bk, Dkst</th>
+									</tr>
+									<tr>
+										<td><select>
+											<option></option>
+											<option>Esig</option>
+											<option>Höhe Esig</option>
+											<option>Zsig</option>
+											<option>Asig</option>
+											<option>Sperrsig</option>
+											<option>Bksig</option>
+											<option>Sbk</option>
+											<option>Dksig</option>
+											<option>Ts 2</option>
+											<option>Sh 2</option>
+											<option>Ne 1</option>
+											<option>LZB-Bk</option>
+											<option>ETCS-Bk</option>
+											<option>LZB-Nothalt</option>
+										</select></td>
+										<td><input type="text" /></td>
+										<td><input type="text" /></td>
+									</tr>
+									<tr>
+										<td><select>
+											<option></option>
+											<option>Esig</option>
+											<option>Höhe Esig</option>
+											<option>Zsig</option>
+											<option>Asig</option>
+											<option>Sperrsig</option>
+											<option>Bksig</option>
+											<option>Sbk</option>
+											<option>Dksig</option>
+											<option>Ts 2</option>
+											<option>Sh 2</option>
+											<option>Ne 1</option>
+											<option>LZB-Bk</option>
+											<option>ETCS-Bk</option>
+											<option>LZB-Nothalt</option>
+										</select></td>
+										<td><input type="text" /></td>
+										<td><input type="text" /></td>
+									</tr>
+									<tr>
+										<td><select>
+											<option></option>
+											<option>Esig</option>
+											<option>Höhe Esig</option>
+											<option>Zsig</option>
+											<option>Asig</option>
+											<option>Sperrsig</option>
+											<option>Bksig</option>
+											<option>Sbk</option>
+											<option>Dksig</option>
+											<option>Ts 2</option>
+											<option>Sh 2</option>
+											<option>Ne 1</option>
+											<option>LZB-Bk</option>
+											<option>ETCS-Bk</option>
+											<option>LZB-Nothalt</option>
+										</select></td>
+										<td><input type="text" /></td>
+										<td><input type="text" /></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr data-befehl="b2.1">
+							<td></td>
+							<td>2.1</td>
+							<td>
+								Sie müssen bis zum Erkennen der Stellung des nächsten Hauptsignals mit höchstens 40 km/h fahren.
+							</td>
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b3">
+							<td />
+							<td>3</td>
+							<td rowspan="2">
+								Sie dürfen aus dem
+								<span class="streichen" data-streichen="b3_btrstelle-bf">Bf</span> /
+								<span class="streichen" data-streichen="b3_btrstelle-bft">Bft</span>
+								<input type="text" style="width: 300px;" /> ausfahren.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+						<tr data-befehl="b3.1">
+							<td />
+							<td>3.1</td>
+							<td>
+								Sie müssen bis zum Erkennen der Stellung des nächsten Hauptsignals mit höchstens 40 km/h fahren.
+							</td>
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b4">
+							<td />
+							<td>4</td>
+							<td rowspan="2">
+								Sie fahren auf dem Gegengleis von <input type="text" style="width: 230px;" />
+								bis <input type="text" style="width: 230px;" />
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b5">
+							<td />
+							<td>5</td>
+							<td rowspan="2">
+								Sie - 
+								<span class="streichen" data-streichen="b5_fahren-fahren">fahren</span> / 
+								<span class="streichen" data-streichen="b5_fahren-schiebennach">schieben nach</span> - 
+								von <input type="text" style="width: 300px;" /><br>
+								in Richtung <input type="text" style="width: 250px;" /> 
+								bis <input type="text" style="width: 250px;" /> 
+								und kehren zurück.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+						<tr data-befehl="b5.1">
+							<td />
+							<td>5.1</td>
+							<td>
+								Hinfahrt auf Regelgleis, Rückfahrt auf Gegengleis.
+							</td>
+						</tr>
+						<tr data-befehl="b5.2">
+							<td />
+							<td>5.2</td>
+							<td>
+								Hinfahrt auf Gegengleis, Rückfahrt auf Regelgleis.
+							</td>
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b6">
+							<td />
+							<td>6</td>
+							<td rowspan="2">
+								Sie dürfen vom Gegengleis<br>
+								<input type="checkbox" class="aktivieren" data-zeile="b6_text-weiterfahren1" />
+								<span class="streichen-text" data-streichen="b6_text-weiterfahren1">
+									ab km <input type="text" class="width-km" /> auf der
+									<span class="streichen" data-streichen="b6_btrstelle1-abzw">Abzw</span> /
+									<span class="streichen" data-streichen="b6_btrstelle1-uest">Üst</span>
+									<input type="text" style="width: 300px;" /> weiterfahren,
+								</span>
+								<br>
+								<input type="checkbox" class="aktivieren" data-zeile="b6_text-weiterfahren2" />
+								<span class="streichen-text" data-streichen="b6_text-weiterfahren2">
+									ab km <input type="text" class="width-km" /> auf der
+									<span class="streichen" data-streichen="b6_btrstelle2-abzw">Abzw</span> /
+									<span class="streichen" data-streichen="b6_btrstelle2-uest">Üst</span>
+									<input type="text" style="width: 300px;" /> weiterfahren,
+								</span>
+								<br>
+								<input type="checkbox" class="aktivieren" data-zeile="b6_text-einausfahren" />
+								<span class="streichen-text" data-streichen="b6_text-einausfahren">
+									ab km <input type="text" class="width-km" /> in den
+									<span class="streichen" data-streichen="b6_btrstelle3-bf">Bf</span> /
+									<span class="streichen" data-streichen="b6_btrstelle3-bft">Bft</span>
+									<input type="text" style="width: 300px;" /> ein- und ausfahren,
+								</span>
+								<br>
+								<input type="checkbox" class="aktivieren" data-zeile="b6_text-einfahren" />
+								<span class="streichen-text" data-streichen="b6_text-einfahren">
+									ab km <input type="text" class="width-km" /> in den
+									<span class="streichen" data-streichen="b6_btrstelle4-bf">Bf</span> /
+									<span class="streichen" data-streichen="b6_btrstelle4-bft">Bft</span>
+									<input type="text" style="width: 300px;" /> einfahren.
+								</span>
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+						<tr data-befehl="b6.1">
+							<td />
+							<td>6.1</td>
+							<td>
+								Sie müssen bis zum Erkennen der Stellung des nächsten Hauptsignals mit höchstens 40 km/h fahren.
+							</td>
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b7">
+							<td />
+							<td>7</td>
+							<td rowspan="2">
+								Sie müssen auf dem Gegengleis -
+								<span class="streichen" data-streichen="b7_ort-ne1">vor Signal Ne 1</span> /
+								<span class="streichen-text" data-streichen="b7_text-inhoehedes">in Höhe des</span>
+								<span class="streichen" data-streichen="b7_ort-esig">Esig</span> /
+								<span class="streichen" data-streichen="b7_ort-bksig">Bksig</span> -
+								<input type="text" /><br>
+								in km <input type="text" class="width-km" />
+								<span class="streichen-text" data-streichen="b7_text-des">des</span>
+								<span class="streichen" data-streichen="b7_btrstelle-bf">Bf</span> /
+								<span class="streichen" data-streichen="b7_btrstelle-bft">Bft</span> /
+								<span class="streichen-text" data-streichen="b7_text-der">der</span>
+								<span class="streichen" data-streichen="b7_btrstelle-abzw">Abzw</span> /
+								<span class="streichen" data-streichen="b7_btrstelle-uest">Üst</span>
+								<input type="text" style="width: 300px;" /> halten.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b8">
+							<td />
+							<td>8</td>
+							<td rowspan="2">
+								Sie müssen -
+								<span class="streichen" data-streichen="b8_ort-zmst">
+									zwischen Zmst <input type="text" style="width: 230px;" />
+									und Zmst <input type="text" style="width: 230px;" />
+								</span><br> -
+								<span class="streichen" data-streichen="b8_ort-btrst">
+									<span class="streichen-text" data-streichen="b8_text-im">im</span>
+									<span class="streichen" data-streichen="b8_btrstelle-bf">Bf</span> /
+									<span class="streichen" data-streichen="b8_btrstelle-bft">Bft</span> /
+									<span class="streichen-text" data-streichen="b8_text-auf">auf</span>
+									<span class="streichen" data-streichen="b8_btrstelle-abzw">Abzw</span> /
+									<span class="streichen" data-streichen="b8_btrstelle-uest">Üst</span>
+									<input type="text" style="width: 300px;" />
+								</span>
+								halten vor BÜ in
+								<span class="streichen-text" data-streichen="b8_text-km1">
+									km <input type="text" class="optional width-km" data-zeile="b8_text-km1" />
+								</span> <br>/
+								<span class="streichen-text" data-streichen="b8_text-km2">
+									km <input type="text" class="optional width-km" data-zeile="b8_text-km2" />
+								</span> /
+								<span class="streichen-text" data-streichen="b8_text-km3">
+									km <input type="text" class="optional width-km" data-zeile="b8_text-km3" />
+								</span> /
+								<span class="streichen-text" data-streichen="b8_text-km4">
+									km <input type="text" class="optional width-km" data-zeile="b8_text-km4" />
+								</span> /
+								<span class="streichen-text" data-streichen="b8_text-km5">
+									km <input type="text" class="optional width-km" data-zeile="b8_text-km5" />
+								</span> /
+								<span class="streichen-text" data-streichen="b8_text-km6">
+									km <input type="text" class="optional width-km" data-zeile="b8_text-km6" />
+								</span><br>
+								Sie dürfen weiterfahren, wenn BÜ gesichert ist.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table class="befehl">
+						<tr data-befehl="b9">
+							<td />
+							<td>9</td>
+							<td rowspan="2">
+								Schalten Sie die LZB von Zmst <input type="text" style="width: 230px;" />
+								bis Zmst <input type="text" style="width: 230px;" /> ab.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b10">
+							<td />
+							<td>10</td>
+							<td rowspan="2">
+								<span class="streichen" data-streichen="b10_fahren-signal">Fahren Sie signalgeführt weiter</span> /
+								<span class="streichen-text" data-streichen="b10_text-waehlensie">Wählen Sie</span>
+								<span class="streichen" data-streichen="b10_fahren-level">ETCS-Level</span> /
+								<span class="streichen" data-streichen="b10_fahren-betriebsart">ETCS-Betriebsart</span>
+								<input type="text" />
+								
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b11">
+							<td />
+							<td>11</td>
+							<td rowspan="2">
+								Fahren Sie bis zur Langsamfahrtstelle höchstens mit der nach Fahrplan zugelassenen Geschwindigkeit.<br>
+								Beachten Sie niedrigere Geschwindigkeiten gemäß Führerraumanzeige und Langsamfahrsignale.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b12">
+							<td />
+							<td>12</td>
+							<td>
+								Sie müssen folgende Geschwindigkeitsbeschränkungen beachten:
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+							<td class="mit-tabelle">
+								<table class="content">
+									<cols>
+										<col width="7%">
+										<col width="7%">
+										<col width="25%">
+										<col width="25%">
+										<col width="20%">
+										<col width="20%">
+										<col width="6%">
+									</cols>
+									<tr>
+										<th>km/h</th>
+										<th>auf<br>Sicht</th>
+										<th>im / auf / zwischen<br>Bf / Bft / Abzw / Üst</th>
+										<th>und<br>Bf / Bft / Abzw / Üst</th>
+										<th>in / von<br>km / Sig</th>
+										<th>bis<br>km / Sig</th>
+										<th>Grund<br>Nr.</th>
+									</tr>
+									<tr data-zeile="1">
+										<td data-fill="kmh" class="inaktiv" />
+										<td data-fill="aufSicht" class="inaktiv">auf<br>Sicht</td>
+										<td data-fill="btrs_anfang"><input type="text" /></td>
+										<td data-fill="btrs_ende"><input type="text" /></td>
+										<td data-fill="ort_anfang"><input type="text" /></td>
+										<td data-fill="ort_ende"><input type="text" /></td>
+										<td data-fill="grund" class="inaktiv">
+											<button onClick="waehleGrund(1)">...</button>
+										</td>
+									</tr>
+									<tr data-zeile="2">
+										<td data-fill="kmh" class="inaktiv" />
+										<td data-fill="aufSicht" class="inaktiv">auf<br>Sicht</td>
+										<td data-fill="btrs_anfang"><input type="text" /></td>
+										<td data-fill="btrs_ende"><input type="text" /></td>
+										<td data-fill="ort_anfang"><input type="text" /></td>
+										<td data-fill="ort_ende"><input type="text" /></td>
+										<td data-fill="grund" class="inaktiv">
+											<button onClick="waehleGrund(2)">...</button>
+										</td>
+									</tr>
+									<tr data-zeile="3">
+										<td data-fill="kmh" class="inaktiv" />
+										<td data-fill="aufSicht" class="inaktiv">auf<br>Sicht</td>
+										<td data-fill="btrs_anfang"><input type="text" /></td>
+										<td data-fill="btrs_ende"><input type="text" /></td>
+										<td data-fill="ort_anfang"><input type="text" /></td>
+										<td data-fill="ort_ende"><input type="text" /></td>
+										<td data-fill="grund" class="inaktiv">
+											<button onClick="waehleGrund(3)">...</button>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr data-befehl="b12.1">
+							<td></td>
+							<td>12.1</td>
+							<td rowspan="2">
+								Stellen Sie fest, ob das Gleis befahrbar ist. Melden Sie das Ergebnis an <input type="text" style="width: 250px;" />
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+						<tr data-befehl="b12.2">
+							<td></td>
+							<td>12.2</td>
+							<td rowspan="2">
+								Geben Sie bei Annäherung an den
+								<span class="streichen" data-streichen="b12_bue-bue">BÜ</span> /
+								<span class="streichen" data-streichen="b12_bue-rue">RÜ</span>
+								Signal Zp 1. Räumen Sie den
+								<span class="streichen" data-streichen="b12_bue-bue">BÜ</span> /
+								<span class="streichen" data-streichen="b12_bue-rue">RÜ</span>
+								schnellstens,<br>
+								wenn erstes Fahrzeug
+								<span class="streichen" data-streichen="b12_bue-bue">Straßenmitte</span> /
+								<span class="streichen" data-streichen="b12_bue-rue">RÜ-Mitte</span>
+								erreicht hat.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+						<tr data-befehl="b12.3">
+							<td></td>
+							<td>12.3</td>
+							<td rowspan="2">
+								Schauen Sie nach Oberleitungsschäden. Melden Sie das Ergebnis an <input type="text" style="width: 250px;" />
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+						<tr data-befehl="b12.4">
+							<td></td>
+							<td>12.4</td>
+							<td rowspan="2">
+								PZB -
+								<span class="streichen width-number" data-streichen="b12_pzb_ort-signal">am <input type="text" /> sig <input type="text" style="width: 250px;" /></span> -
+								<span class="streichen width-km" data-streichen="b12_pzb_ort-km">in km <input type="text" /></span> -
+								ständig
+								<span class="streichen" data-streichen="b12_pzb_wirksam-wirksam">wirksam</span> -
+								<span class="streichen" data-streichen="b12_pzb_wirksam-unwirksam">unwirksam</span>.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+						<tr data-befehl="b12.5">
+							<td></td>
+							<td>12.5</td>
+							<td rowspan="2">
+								Warnen Sie Personen an und im Gleis durch Signal Zp 1. Halten Sie an,<br>
+								wenn Personen das Gleis nicht verlassen.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+						<tr data-befehl="b12.6">
+							<td></td>
+							<td>12.6</td>
+							<td>
+								*) gilt nur, wenn der Zug signalgeführt wird.
+							</td>
+						</tr>
+						<tr data-befehl="b12.7">
+							<td></td>
+							<td>12.7</td>
+							<td>
+								Geben Sie bei Annäherung an den Bahnsteig Signal Zp 1.
+							</td>
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b13">
+							<td />
+							<td>13</td>
+							<td rowspan="2">
+								Sie sind vom Fahren auf Sicht zwischen <input type="text" style="width: 190px;" />
+								und <input type="text" style="width: 190px;" /> entbunden.
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+					</table>
+					<table class="befehl">
+						<tr data-befehl="b14">
+							<td />
+							<td>14</td>
+							<td rowspan="2">
+								<input type="text" style="width: 800px;" /><br>
+								<input type="text" style="width: 800px;" /><br>
+								<input type="text" style="width: 800px;" /><br>
+								<input type="text" style="width: 800px;" />
+							</td>
+						</tr>
+						<tr class="empty">
+							<td />
+							<td />
+						</tr>
+					</table>
+					<div class="uebermittlungscode">Übermittlungscode: <input type="text" style="width: 700px;" /></div>
+					<table class="fuss">
+						<cols>
+							<col width="50%" />
+							<col width="20%" />
+							<col width="15%" />
+							<col width="15%" />
+						</cols>
+						<tr>
+							<td style="display: flex;"><input type="text" style="flex-grow: 1;" />,</td>
+							<td><div><input type="text" />,</div></td>
+							<td><div><input type="text" />,</div></td>
+							<td><div><input type="text" /></div></td>
+						</tr>
+						<tr class="subtitle">
+							<td>(Ort)</td>
+							<td>(Datum)</td>
+							<td>(Uhr)</td>
+							<td>(Minuten)</td>
+						</tr>
+						<tr>
+							<td><div><input type="text" /></div></td>
+							<td colspan="3"><div><input type="text" /></div></td>
+						</tr>
+						<tr class="subtitle">
+							<td>(Fahrdienstleiter)</td>
+							<td colspan="3">(erhalten (Name, Triebfahrzeugführer))</td>
+						</tr>
+						<tr>
+							<td><div><input type="text" /></div></td>
+							<td colspan="3">
+								<div>bei fmdl. Übermittlung:
+								<label><input type="checkbox"> ZF</label> / <label><input type="checkbox"> andere</label>
+								<input type="text" /></div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
