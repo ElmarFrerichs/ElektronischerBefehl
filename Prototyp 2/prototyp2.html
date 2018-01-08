@@ -153,6 +153,11 @@
 				border: none;
 				width: 100%;
 			}
+			.content .grund {
+				width: 100%;
+				padding-left: 2px;
+				padding-right: 2px;
+			}
 			
 			.width-btrst {
 				width: 300px;
@@ -171,6 +176,7 @@
 		<script type="text/javascript">
 			var GESTRICHEN_CLASS = "gestrichen";
 			var ANGEKREUZT_CLASS = "angekreuzt";
+			var BEFEHL_14_TEXT = "s. Bef 14";
 			
 			var daten = {};
 			
@@ -220,6 +226,8 @@
 				var altAufSicht = $('[data-zeile="'+zeile+'"]').attr("data-aufSicht");
 				var altMitStern = $('[data-zeile="'+zeile+'"]').attr("data-mitStern");
 				
+				console.log("wählen", {alterGrund:alterGrund, altGeschwindigkeit:altGeschwindigkeit, altAufSicht:altAufSicht, altMitStern:altMitStern});
+				
 				var url = "grund.html?zeile="+zeile;
 				if(alterGrund) {
 					url += "&grund="+alterGrund;
@@ -227,10 +235,10 @@
 				if(altGeschwindigkeit) {
 					url += "&geschwindigkeit="+altGeschwindigkeit;
 				}
-				if(altAufSicht) {
+				if(altAufSicht == "true") {
 					url += "&aufSicht=1";
 				}
-				if(altMitStern) {
+				if(altMitStern == "true") {
 					url += "&mitStern=1";
 				}
 				window.open(url, "_blank", "dependent=yes");
@@ -247,7 +255,12 @@
 				$('[data-zeile="'+zeile+'"]').attr("data-mitStern", mitStern);
 				
 				$('[data-zeile="'+zeile+'"] [data-fill="kmh"]').html(feldGeschwindigkeit);
-				$('[data-zeile="'+zeile+'"] [data-fill="grund"] button').html(grund);
+				
+				var textGrund = grund;
+				if(textGrund === 0) {
+					textGrund = BEFEHL_14_TEXT;
+				}
+				$('[data-zeile="'+zeile+'"] [data-fill="grund"] button').html(textGrund);
 				
 				if(aufSicht) {
 					$('[data-zeile="'+zeile+'"] [data-fill="aufSicht"]').removeClass(GESTRICHEN_CLASS);
@@ -844,7 +857,7 @@
 										<td data-fill="ort_anfang"><input type="text" /></td>
 										<td data-fill="ort_ende"><input type="text" /></td>
 										<td data-fill="grund" class="inaktiv">
-											<button onClick="waehleGrund(1)">...</button>
+											<button class="grund" onClick="waehleGrund(1)">...</button>
 										</td>
 									</tr>
 									<tr data-zeile="2">
@@ -855,7 +868,7 @@
 										<td data-fill="ort_anfang"><input type="text" /></td>
 										<td data-fill="ort_ende"><input type="text" /></td>
 										<td data-fill="grund" class="inaktiv">
-											<button onClick="waehleGrund(2)">...</button>
+											<button class="grund" onClick="waehleGrund(2)">...</button>
 										</td>
 									</tr>
 									<tr data-zeile="3">
@@ -866,7 +879,7 @@
 										<td data-fill="ort_anfang"><input type="text" /></td>
 										<td data-fill="ort_ende"><input type="text" /></td>
 										<td data-fill="grund" class="inaktiv">
-											<button onClick="waehleGrund(3)">...</button>
+											<button class="grund" onClick="waehleGrund(3)">...</button>
 										</td>
 									</tr>
 								</table>

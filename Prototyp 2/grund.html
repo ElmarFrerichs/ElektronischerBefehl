@@ -88,6 +88,7 @@
 			function setGrund(neuerGrund) {
 				grund = parseInt(neuerGrund);
 				setzeGeschwindigkeitsfelderAktiv(false);
+				setSignalgeführtAktiv(true);
 				
 				switch(grund) {
 					case 1:
@@ -100,51 +101,52 @@
 					case 32:
 					case 33:
 					case 39:
-						geschwindigkeit = "";
-						aufSicht = true;
+						setGeschwindigkeitsFeld("");
+						setAufSichtFeld(true);
+						setSignalgeführtAktiv(false);
 						break;
 					case 25:
-						geschwindigkeit = 20;
-						aufSicht = true;
+						setGeschwindigkeitsFeld(20);
+						setAufSichtFeld(true);
 						break;
 					case 12:
 					case 36:
-						geschwindigkeit = 5;
-						aufSicht = false;
+						setGeschwindigkeitsFeld(5);
+						setAufSichtFeld(false);
 						break;
 					case 40:
-						geschwindigkeit = 10;
-						aufSicht = false;
+						setGeschwindigkeitsFeld(10);
+						setAufSichtFeld(false);
 						break;
 					case 5:
 					case 10:
-						geschwindigkeit = 20;
-						aufSicht = false;
+						setGeschwindigkeitsFeld(20);
+						setAufSichtFeld(false);
 						break;
 					case 4:
 					case 6:
 					case 11:
-						geschwindigkeit = 30;
-						aufSicht = false;
+						setGeschwindigkeitsFeld(30);
+						setAufSichtFeld(false);
 						break;
 					case 9:
 					case 42:
-						geschwindigkeit = 40;
-						aufSicht = false;
+						setGeschwindigkeitsFeld(40);
+						setAufSichtFeld(false);
 						break;
 					case 8:
 					case 34:
 					case 35:
-						geschwindigkeit = 50;
-						aufSicht = false;
+						setGeschwindigkeitsFeld(50);
+						setAufSichtFeld(false);
 						break;
 					case 43:
-						geschwindigkeit = 80;
-						aufSicht = false;
+						setGeschwindigkeitsFeld(80);
+						setAufSichtFeld(false);
 						break;
 					case 37:
-						geschwindigkeit = 200;
-						aufSicht = false;
+						setGeschwindigkeitsFeld(200);
+						setAufSichtFeld(false);
 						break;
 					case 20:
 					case 22:
@@ -152,8 +154,9 @@
 					case 30:
 					case 38:
 					case 41:
-						geschwindigkeit = getGeschwindigkeitsFeld();
-						aufSicht = getAufSichtFeld;
+					case 0:
+						setGeschwindigkeitsFeld(getGeschwindigkeitsFeld());
+						setAufSichtFeld(getAufSichtFeld());
 						setzeGeschwindigkeitsfelderAktiv(true);
 						break;
 					default:
@@ -171,18 +174,24 @@
 				return $("#ipt-geschwindigkeit").val();
 			}
 			function setGeschwindigkeitsFeld(wert) {
+				geschwindigkeit = wert;
 				$("#ipt-geschwindigkeit").val(wert);
 			}
 			function getAufSichtFeld() {
 				return $("#cbx-aufSicht").prop("checked");
 			}
 			function setAufSichtFeld(wert) {
+				aufSicht = wert;
 				$("#cbx-aufSicht").prop("checked", wert);
 			}
 			function getSignalgeführt() {
 				return $("#cbx-signalgefuehrt").prop("checked");
 			}
+			function setSignalgeführtAktiv(wert) {
+				$("#cbx-signalgefuehrt").prop("disabled", !wert);
+			}
 			function setSignalgeführt(wert) {
+				mitStern = wert;
 				$("#cbx-signalgefuehrt").prop("checked", wert);
 			}
 			
@@ -193,22 +202,21 @@
 				});
 				
 				$("#ipt-geschwindigkeit").on("change", function() {
-					geschwindigkeit = getGeschwindigkeitsFeld();
+					setGeschwindigkeitsFeld(getGeschwindigkeitsFeld());
 				});
 				$("#cbx-aufSicht").on("change", function() {
-					aufSicht = getAufSichtFeld;
+					setAufSichtFeld(getAufSichtFeld());
 				});
 				
-				$(".btn-b14").click(function() {
-					alert("Verwende Befehl 14");
-				});
 				$(".btn-waehlen").click(function() {
+					console.log("Absenden:", [zeile, grund, geschwindigkeit, aufSicht, getSignalgeführt()]);
 					var erfolg = window.opener.setGrund(zeile, grund, geschwindigkeit, aufSicht, getSignalgeführt());
 					if(erfolg) {
 						window.close();
 					}
 				});
 				
+				// Initialisierung
 				if(urlGrund) {
 					setGrund(urlGrund);
 				}
@@ -226,7 +234,7 @@
 	</head>
 	<body>
 		<div class="buttons">
-			<button class="btn-b14">Grund in Befehl 14</button>
+			<button class="btn-waehlen">Grund wählen</button>
 		</div>
 		<table class="gruende">
 			<tr class="kopf">
@@ -413,6 +421,15 @@
 				<td>Windwarnung</td>
 				<td>80 km/h</td>
 			</tr>
+
+			<tr class="gruppe">
+				<td colspan="3">Sonstiges</td>
+			</tr>
+			<tr data-grund="0">
+				<td>0</td>
+				<td>Grund in Befehl 14</td>
+				<td>unterschiedlich</td>
+			</tr>
 		</table>
 		
 		<div class="buttons">
@@ -429,7 +446,6 @@
 					<label><input type="checkbox" id="cbx-signalgefuehrt"> Gilt nur, wenn Zug signalgeführt ist</label>
 				</p>
 			<p>
-				<button class="btn-b14">Grund in Befehl 14</button>
 				<button class="btn-waehlen">Grund wählen</button>
 			</p>
 		</div>
