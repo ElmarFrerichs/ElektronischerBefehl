@@ -186,17 +186,11 @@
 			function streiche(dataId) {
 				return $("[data-streichen="+dataId+"]").addClass(GESTRICHEN_CLASS);
 			}
-			function streicheName(gruppe, name) {
-				return streiche(gruppe+"-"+name);
-			}
 			function streicheGruppe(gruppe) {
 				return $("[data-streichen|="+gruppe+"]").addClass(GESTRICHEN_CLASS);
 			}
 			function entstreiche(dataId) {
 				return $("[data-streichen="+dataId+"]").removeClass(GESTRICHEN_CLASS);
-			}
-			function entstreicheName(gruppe, name) {
-				return entstreiche(gruppe+"-"+name);
 			}
 			
 			function setDaten(befehl, gruppe, wert) {
@@ -225,8 +219,6 @@
 				var altGeschwindigkeit = $('[data-zeile="'+zeile+'"]').attr("data-geschwindigkeit");
 				var altAufSicht = $('[data-zeile="'+zeile+'"]').attr("data-aufSicht");
 				var altMitStern = $('[data-zeile="'+zeile+'"]').attr("data-mitStern");
-				
-				console.log("wählen", {alterGrund:alterGrund, altGeschwindigkeit:altGeschwindigkeit, altAufSicht:altAufSicht, altMitStern:altMitStern});
 				
 				var url = "grund.html?zeile="+zeile;
 				if(alterGrund) {

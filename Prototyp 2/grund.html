@@ -209,7 +209,6 @@
 				});
 				
 				$(".btn-waehlen").click(function() {
-					console.log("Absenden:", [zeile, grund, geschwindigkeit, aufSicht, getSignalgeführt()]);
 					var erfolg = window.opener.setGrund(zeile, grund, geschwindigkeit, aufSicht, getSignalgeführt());
 					if(erfolg) {
 						window.close();
